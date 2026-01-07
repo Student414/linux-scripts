@@ -1,2 +1,2 @@
 # linux-scripts
-Awesone scripts for Linux
+Awesome scripts for Linux
