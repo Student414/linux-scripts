@@ -1,0 +1,15 @@
+[Unit]
+Description=Port forwarding
+After=network.target
+Wants=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/sbin/iptables -t nat -A PREROUTING -p tcp --dport 3389 -m addrtype --dst-type LOCAL -j DNAT --to-destination 192.168.100.111:3389
+ExecStart=/sbin/iptables -t nat -A POSTROUTING -p tcp --dport 3389 -d 192.168.100.111 -j MASQUERADE
+ExecStop=/sbin/iptables -t nat -D PREROUTING -p tcp --dport 3389 -m addrtype --dst-type LOCAL -j DNAT --to-destination 192.168.100.111:3389
+ExecStop=/sbin/iptables -t nat -D POSTROUTING -p tcp --dport 3389 -d 192.168.100.111 -j MASQUERADE
+
+[Install]
+WantedBy=multi-user.target
