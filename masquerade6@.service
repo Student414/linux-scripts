@@ -1,0 +1,13 @@
+[Unit]
+Description=ip6tables MASQUERADE for %I
+After=network.target
+Wants=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/sbin/ip6tables -t nat -A POSTROUTING -o %i -j MASQUERADE
+ExecStop=/sbin/ip6tables -t nat -D POSTROUTING -o %i -j MASQUERADE
+
+[Install]
+WantedBy=multi-user.target

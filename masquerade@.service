@@ -1,0 +1,13 @@
+[Unit]
+Description=iptables MASQUERADE for %I
+After=network.target
+Wants=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/sbin/iptables -t nat -A POSTROUTING -o %i -j MASQUERADE
+ExecStop=/sbin/iptables -t nat -D POSTROUTING -o %i -j MASQUERADE
+
+[Install]
+WantedBy=multi-user.target
