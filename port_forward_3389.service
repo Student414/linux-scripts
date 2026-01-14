@@ -6,10 +6,11 @@ Wants=network.target
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/sbin/iptables -t nat -A PREROUTING -p tcp --dport 3389 -m addrtype --dst-type LOCAL -j DNAT --to-destination 192.168.100.111:3389
-ExecStart=/sbin/iptables -t nat -A POSTROUTING -p tcp --dport 3389 -d 192.168.100.111 -j MASQUERADE
-ExecStop=/sbin/iptables -t nat -D PREROUTING -p tcp --dport 3389 -m addrtype --dst-type LOCAL -j DNAT --to-destination 192.168.100.111:3389
-ExecStop=/sbin/iptables -t nat -D POSTROUTING -p tcp --dport 3389 -d 192.168.100.111 -j MASQUERADE
+Environment="TARGET_HOST=192.168.137.1" "TARGET_PORT=3389" "HOST_PORT=3389"
+ExecStart=/sbin/iptables -t nat -A PREROUTING -p tcp --dport ${HOST_PORT} -m addrtype --dst-type LOCAL -j DNAT --to-destination ${TARGET_HOST}:${TARGET_PORT}
+ExecStart=/sbin/iptables -t nat -A POSTROUTING -p tcp --dport ${TARGET_PORT} -d ${TARGET_HOST} -j MASQUERADE
+ExecStop=/sbin/iptables -t nat -D PREROUTING -p tcp --dport ${HOST_PORT} -m addrtype --dst-type LOCAL -j DNAT --to-destination ${TARGET_HOST}:${TARGET_PORT}
+ExecStop=/sbin/iptables -t nat -D POSTROUTING -p tcp --dport ${TARGET_PORT} -d ${TARGET_HOST} -j MASQUERADE
 
 [Install]
 WantedBy=multi-user.target
